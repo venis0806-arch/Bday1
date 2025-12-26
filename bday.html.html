@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Happy Birthday, Picu 💗</title>
+
+<!-- Handwriting font -->
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin:0;
+    font-family: "Sacramento", cursive;
+    font-weight: bold;
+    color:black;
+    overflow:hidden;
+    background:#ffc0cb;
+    position:relative;
+}
+
+.screen {
+    width:100%;
+    height:100vh;
+    position:absolute;
+    top:0; left:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    text-align:center;
+    transition: transform 0.6s ease;
+}
+
+h1 {font-size:48px;margin-bottom:20px;}
+h2 {font-size:42px;margin-bottom:20px;}
+p, .letter {max-width:700px;font-size:24px;line-height:1.7;margin:auto;}
+
+.heart-btn {background:#ff5da2;color:white;padding:16px 28px;font-size:20px;border:none;border-radius:30px;cursor:pointer;margin-top:20px;}
+.back-btn {position:absolute;top:20px;left:20px;background:#ff5da2;color:white;padding:12px 16px;font-size:20px;border:none;border-radius:50%;cursor:pointer;}
+
+.paw {position:absolute;font-size:28px;opacity:1;animation: fade 2.4s ease forwards;pointer-events:none;}
+@keyframes fade {to{opacity:0;transform:scale(.5);}}
+
+.heart {position:absolute;font-size:24px;color:red;pointer-events:none;opacity:1;}
+.screen3-heading {
+    background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    padding:60px;
+    border-radius:15px;
+}
+.cake-img {width:300px;border-radius:15px;margin-bottom:20px;position:relative;}
+
+/* Sparkles */
+.sparkle {
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:white;
+    border-radius:50%;
+    opacity:0.9;
+    pointer-events:none;
+    animation: sparkleAnim 2s linear infinite;
+}
+@keyframes sparkleAnim {
+    0% {transform: translateY(0) scale(1); opacity:1;}
+    50% {transform: translateY(-40px) scale(1.5); opacity:0.7;}
+    100% {transform: translateY(-80px) scale(0.5); opacity:0;}
+}
+</style>
+</head>
+
+<body ontouchstart="spawnPaw(event)" onclick="spawnPaw(event)">
+
+<!-- Screens -->
+<div class="screen" id="screen1">
+  <h1>Happy Birthday, My Picu 💗</h1>
+  <button class="heart-btn" onclick="nextScreen()">Tap to Begin 🐾</button>
+</div>
+
+<div class="screen" id="screen2" style="transform:translateX(100%);">
+  <button class="back-btn" onclick="prevScreen()">⬅️</button>
+  <h2>1 month 15 days 💕</h2>
+  <p class="letter">Our journey has just begun, but every day with you is magic!</p>
+  <button class="heart-btn" onclick="nextScreen()">Next ➡️</button>
+</div>
+
+<div class="screen" id="screen3" style="transform:translateX(100%);">
+  <button class="back-btn" onclick="prevScreen()">⬅️</button>
+  <h2 class="screen3-heading">🌴 Beach Vibes 🌴</h2>
+  <p class="letter">Imagine us walking along soft sand, waves kissing our toes, and your smile brighter than the sunset.</p>
+  <button class="heart-btn" onclick="nextScreen()">Next ➡️</button>
+</div>
+
+<div class="screen" id="screen4" style="transform:translateX(100%); overflow:hidden;">
+  <button class="back-btn" onclick="prevScreen()">⬅️</button>
+  <h2>🩷 A Letter from Aishu</h2>
+  <p class="letter">
+    Hey my little beach-loving, cat-hearted cutie.<br>
+    It’s only been 1 month and 15 magical days but somehow it feels like you’ve lived inside my smile forever.<br><br>
+    You love softly — slowly — not instantly. And that’s what makes your love precious. Because when you choose, you choose deep.<br><br>
+    I want you to know something today — you don’t have to rush how you feel. I’m here, matching your pace, walking beside you on this beach, letting the waves write our story.<br><br>
+    I hope this year brings you ocean-deep peace, sunset-warm happiness, and the kind of love that feels like home. And I promise — I’ll be your safest place, even from miles apart.<br><br>
+    🩵 Yours, Aishu
+  </p>
+  <button class="heart-btn" onclick="nextScreen()">Next ➡️</button>
+</div>
+
+<div class="screen" id="screen5" style="transform:translateX(100%); position:relative;">
+  <button class="back-btn" onclick="prevScreen()">⬅️</button>
+  <h2>🎂 Happy Birthday!</h2>
+  <div style="position:relative;">
+    <img class="cake-img" id="cakeImage" src="https://images.unsplash.com/photo-1589308078050-190dd8d57b92?auto=format&fit=crop&w=600&q=80" alt="Birthday Cake"/>
+  </div>
+  <p class="letter">Wishing you the sweetest day ever! 🐾💗</p>
+  <button class="heart-btn" onclick="nextScreen()">Next ➡️</button>
+</div>
+
+<div class="screen" id="screen6" style="transform:translateX(100%);">
+  <button class="back-btn" onclick="prevScreen()">⬅️</button>
+  <h2>💖 I Love You, Picu 💖</h2>
+  <p class="letter">Thank you for being my sunshine. Wishing you the happiest birthday ever! 🐾💗</p>
+</div>
+
+<!-- Confetti Canvas -->
+<canvas id="confettiCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+
+<script>
+let currentScreen=1;
+const totalScreens=6;
+
+/* Paw prints */
+function spawnPaw(e){
+  const paw=document.createElement("div");
+  paw.className="paw";
+  paw.innerText="🐾";
+  paw.style.left=e.pageX+"px";
+  paw.style.top=e.pageY+"px";
+  document.body.appendChild(paw);
+  setTimeout(()=>paw.remove(),2400);
+}
+
+/* Falling hearts */
+function createLetterHeart(){
+  if(currentScreen===4){
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.style.left=Math.random()*window.innerWidth+"px";
+    heart.style.top="-20px";
+    heart.style.fontSize=Math.random()*24+18+"px";
+    heart.innerText="❤️";
+    document.getElementById("screen4").appendChild(heart);
+    let fall=setInterval(()=>{
+      let top=parseFloat(heart.style.top);
+      if(top<window.innerHeight){heart.style.top=top+2+"px";}
+      else{heart.remove();clearInterval(fall);}
+    },16);
+    setTimeout(()=>{if(heart)heart.remove()},4000);
+  }
+}
+setInterval(createLetterHeart,500);
+
+/* Canvas Confetti */
+const canvas=document.getElementById('confettiCanvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+function Confetto(){
+  this.x=Math.random()*canvas.width;
+  this.y=Math.random()*canvas.height-50;
+  this.r=Math.random()*6+4;
+  this.color=`hsl(,100%,50%)`;
+  this.speedY=Math.random()*3+2;
+  this.tilt=Math.random()*10-5;
+  this.draw=function(){
+    ctx.fillStyle=this.color;
+    ctx.beginPath();
+    ctx.moveTo(this.x,this.y);
+    ctx.lineTo(this.x+this.tilt,this.y+this.r);
+    ctx.lineTo(this.x+this.tilt,this.y-this.r);
+    ctx.closePath();
+    ctx.fill();
+  };
+  this.update=function(){this.y+=this.speedY;if(this.y>canvas.height)this.y=-10;};
+}
+let confettis=[];
+function launchConfetti(){
+  for(let i=0;i<100;i++){confettis.push(new Confetto());}
+  let confettiAnim=setInterval(()=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettis.forEach(c=>{c.update();c.draw();});
+  },16);
+  setTimeout(()=>{clearInterval(confettiAnim); confettis=[]; ctx.clearRect(0,0,canvas.width,canvas.height);},3000);
+}
+
+/* Next Screen */
+function nextScreen(){
+  launchConfetti();
+  if(currentScreen<totalScreens){
+    document.getElementById("screen"+currentScreen).style.transform="translateX(-100%)";
+    currentScreen++;
+    document.getElementById("screen"+currentScreen).style.transform="translateX(0)";
+  }
+}
+
+/* Previous Screen */
+function prevScreen(){
+  if(currentScreen>1){
+    document.getElementById("screen"+currentScreen).style.transform="translateX(100%)";
+    currentScreen--;
+    document.getElementById("screen"+currentScreen).style.transform="translateX(0)";
+  }
+}
+
+/* Sparkles on cake page */
+function createSparkle(){
+  if(currentScreen===5){
+    const sparkle=document.createElement("div");
+    sparkle.className="sparkle";
+    const cake=document.getElementById("cakeImage");
+    const rect=cake.getBoundingClientRect();
+    sparkle.style.left=(rect.left + Math.random()*rect.width)+"px";
+    sparkle.style.top=(rect.top + Math.random()*rect.height)+"px";
+    document.body.appendChild(sparkle);
+    setTimeout(()=>sparkle.remove(),2000);
+  }
+}
+setInterval(createSparkle,200);
+</script>
+</body>
+</html>
